@@ -58,6 +58,11 @@ jobs:
         run: |
           npm ci
           npm run build
+      - name: Prepare daemon sidecar
+        run: |
+          cargo build --manifest-path daemon/Cargo.toml --release --bin udm-daemon
+          cd ui
+          npm run prepare:sidecar
       - name: Check Tauri shell compiles
         working-directory: ui/src-tauri
         run: cargo check
