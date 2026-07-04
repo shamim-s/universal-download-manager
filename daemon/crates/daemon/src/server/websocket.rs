@@ -358,6 +358,23 @@ fn queue_payload(state: &Arc<AppState>, payload: AddDownloadPayload) -> Result<(
 /// for the inferred filename when the client doesn't pin an explicit save path.
 /// With `auto_categorize` on, defaulted paths get a per-type subfolder
 /// (Video, Music, …) between the directory and the filename.
+fn is_absolute_client_path(path: &str) -> bool {
+    if std::path::Path::new(path).is_absolute() {
+        return true;
+    }
+    let bytes = path.as_bytes();
+    (bytes.len() >= 3
+        && bytes[0].is_ascii_alphabetic()
+        && bytes[1] == b':'
+        && matches!(bytes[2], b'/' | b'\\'))
+        || path.starts_with("//")
+        || path.starts_with("\\\\")
+}
+
+fn has_client_path_traversal(path: &str) -> bool {
+    path.split(['/', '\\']).any(|part| part == "..")
+}
+
 fn build_job(
     payload: AddDownloadPayload,
     default_dir: Option<&std::path::Path>,
@@ -390,11 +407,13 @@ fn build_job(
         // reject path traversal and re-sanitize the basename so a crafted value
         // can't write outside the chosen folder.
         Some(p) => {
-            let candidate = PathBuf::from(p);
-            let has_traversal = candidate
-                .components()
-                .any(|c| matches!(c, std::path::Component::ParentDir));
-            if candidate.is_absolute() && !has_traversal {
+            let normalized = if p.contains('\\') {
+                p.replace('\\', "/")
+            } else {
+                p.to_string()
+            };
+            let candidate = PathBuf::from(&normalized);
+            if is_absolute_client_path(p) && !has_client_path_traversal(p) {
                 let name = candidate
                     .file_name()
                     .map(|n| validate::safe_filename(&n.to_string_lossy()))
@@ -559,5 +578,42 @@ mod tests {
         assert_eq!(job.save_path, std::path::Path::new("D:/Media/movie.mp4"));
         assert_eq!(job.filename, "movie.mp4");
         assert_eq!(job.file_size, Some(1234));
+    }
+
+    #[test]
+    fn build_job_honors_windows_backslash_picked_folder() {
+        let payload = AddDownloadPayload {
+            url: "https://x.com/f.bin".into(),
+            filename: Some("movie.mp4".into()),
+            save_path: Some(r"D:\Media\movie.mp4".into()),
+            cookies: None,
+            referrer: None,
+            headers: None,
+            source_browser: "chrome".into(),
+            priority: None,
+            file_size: None,
+        };
+        let dir = std::path::Path::new("C:/Downloads");
+        let job = build_job(payload, Some(dir), false);
+        assert_eq!(job.save_path, std::path::Path::new("D:/Media/movie.mp4"));
+        assert_eq!(job.filename, "movie.mp4");
+    }
+
+    #[test]
+    fn build_job_rejects_backslash_traversal_save_path() {
+        let payload = AddDownloadPayload {
+            url: "https://x.com/f.bin".into(),
+            filename: None,
+            save_path: Some(r"D:\Media\..\Windows\evil.bin".into()),
+            cookies: None,
+            referrer: None,
+            headers: None,
+            source_browser: "chrome".into(),
+            priority: None,
+            file_size: None,
+        };
+        let dir = std::path::Path::new("C:/Downloads");
+        let job = build_job(payload, Some(dir), false);
+        assert_eq!(job.save_path, dir.join("f.bin"));
     }
 }
