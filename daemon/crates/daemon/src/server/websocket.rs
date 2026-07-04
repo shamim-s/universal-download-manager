@@ -543,10 +543,17 @@ mod tests {
     fn build_job_honors_absolute_picked_folder() {
         // The UI's folder picker returns an absolute path outside the default
         // download dir; a download manager must honor it (not jail to one dir).
+        // Use platform-appropriate absolute paths so the test works on Linux CI
+        // as well as Windows.
+        #[cfg(windows)]
+        let (picked, default_dir) = ("D:/Media/movie.mp4", "C:/Downloads");
+        #[cfg(not(windows))]
+        let (picked, default_dir) = ("/media/movie.mp4", "/downloads");
+
         let payload = AddDownloadPayload {
             url: "https://x.com/f.bin".into(),
             filename: Some("movie.mp4".into()),
-            save_path: Some("D:/Media/movie.mp4".into()),
+            save_path: Some(picked.into()),
             cookies: None,
             referrer: None,
             headers: None,
@@ -554,9 +561,9 @@ mod tests {
             priority: None,
             file_size: Some(1234),
         };
-        let dir = std::path::Path::new("C:/Downloads");
+        let dir = std::path::Path::new(default_dir);
         let job = build_job(payload, Some(dir), false);
-        assert_eq!(job.save_path, std::path::Path::new("D:/Media/movie.mp4"));
+        assert_eq!(job.save_path, std::path::Path::new(picked));
         assert_eq!(job.filename, "movie.mp4");
         assert_eq!(job.file_size, Some(1234));
     }
