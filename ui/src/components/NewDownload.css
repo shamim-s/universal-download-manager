@@ -1,0 +1,88 @@
+/* Layout for the standalone "New Download" popup window. Reuses .btn/.field/
+   .progress from App.css; these classes only add the window-specific framing. */
+
+.nd {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100vh;
+  padding: 16px 18px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.nd__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.nd__title--sm {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nd__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.nd__url {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nd__size {
+  flex: none;
+}
+
+.nd__folder {
+  display: flex;
+  gap: 8px;
+}
+
+.nd__folder .field__input {
+  flex: 1;
+  min-width: 0;
+}
+
+.nd__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.nd__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.nd__warn {
+  margin: 0;
+  font-size: 12px;
+  color: var(--danger);
+}
+
+.nd__ok {
+  margin: 0;
+  font-size: 12px;
+  color: var(--success);
+  word-break: break-all;
+}
+
+.nd__missing {
+  margin: 0;
+  color: var(--text-dim);
+}

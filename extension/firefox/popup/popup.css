@@ -1,0 +1,16 @@
+body {
+  width: 260px;
+  font-family: system-ui, sans-serif;
+  padding: 12px;
+  margin: 0;
+}
+h1 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+.status { font-size: 12px; margin: 4px 0; color: #666; }
+.status.ok { color: #137333; }
+.status.err { color: #c5221f; }
+.row { font-size: 13px; margin: 6px 0; font-weight: 600; }
+ul { list-style: none; padding: 0; margin: 8px 0 0; max-height: 220px; overflow:auto; }
+li { font-size: 12px; padding: 4px 0; border-top: 1px solid #eee; color: #333; }

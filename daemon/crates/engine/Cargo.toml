@@ -1,0 +1,21 @@
+[package]
+name = "udm-engine"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+udm-storage = { path = "../storage" }
+tokio.workspace = true
+tokio-util.workspace = true
+reqwest.workspace = true
+uuid.workspace = true
+futures-util.workspace = true
+bytes.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt", "test-util", "time"] }

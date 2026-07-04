@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+  "name": "Universal Download Manager",
+  "version": "0.1.0",
+  "description": "Intercept browser downloads and hand them to the UDM daemon.",
+  "permissions": [
+    "downloads",
+    "webRequest",
+    "cookies",
+    "storage",
+    "notifications",
+    "contextMenus",
+    "<all_urls>"
+  ],
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
+  "browser_action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "icons/icon48.png"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "udm@udm.app"
+    }
+  }
+}

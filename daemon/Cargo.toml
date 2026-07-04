@@ -1,0 +1,31 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/daemon",
+    "crates/engine",
+    "crates/storage",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["UDM Team"]
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+tokio-util = "0.7"
+tokio-tungstenite = "0.21"
+futures-util = "0.3"
+reqwest = { version = "0.12", features = ["stream"] }
+bytes = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.31", features = ["bundled"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+url = "2"
+chrono = { version = "0.4", features = ["serde"] }
+anyhow = "1"
+thiserror = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

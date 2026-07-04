@@ -1,0 +1,24 @@
+# Rust
+/daemon/target/
+**/*.rs.bk
+
+# Node / UI
+node_modules/
+ui/dist/
+ui/src-tauri/target/
+
+# Bundled sidecar binary (regenerated via `npm run prepare:sidecar`)
+ui/src-tauri/binaries/
+
+# Databases / downloads / temp
+*.db
+*.db-journal
+*.part
+*.part.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
